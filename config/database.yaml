@@ -1,0 +1,9 @@
+database:
+  connection:
+    host: localhost
+    password: ''
+    port: '27017'
+    username: ''
+  settings:
+    auth_source: admin
+    name: smart_garage_door

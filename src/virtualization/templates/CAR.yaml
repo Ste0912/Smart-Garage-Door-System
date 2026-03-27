@@ -1,0 +1,50 @@
+schemas:
+  common_fields:
+    type: str
+    profile:
+      reg_plate: str
+      password: str
+      uid: str
+      atHome: bool
+    metadata:
+      created_at: datetime
+      updated_at: datetime
+      logged_in: bool
+
+  entity:
+    data:
+      exit: []
+      enter: []      
+
+  validations:
+    mandatory_fields:
+      root:
+        - type
+      profile:
+        - reg_plate
+        - password
+        - uid
+        - atHome
+      metadata:
+        - created_at
+        - updated_at
+        - logged_as
+
+    type_constraints:
+      profile.reg_plate:
+        type: str
+      profile.password:
+        type: str
+      profile.uid:
+        type: str
+      profile.atHome:
+        type: bool
+      metadata.logged_as:
+        type: str
+
+    initialization:
+      metadata:
+        logged_as: "None"
+      data:
+        enter: []
+        exit: []
