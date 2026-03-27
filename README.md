@@ -49,19 +49,19 @@ Ensure you have the following installed and configured on your host machine:
    ```
  * Start the required background services:
    Ensure MongoDB and your MQTT broker are running.
-```bash
+   ```bash
     net start mongodb
     mosquitto -v -c "path\to\your\mosquitto.conf"
-```
+   ```
  * Set up the Python environment:
    Create and activate a virtual environment, then install dependencies.
-```bash
+   ```bash
    python3.10 -m venv venv
    venv\Scripts\activate
    pip install -r requirements.txt
-```
+   ```
  * Run the Application:
-```bash
+   ```bash
    python app.py
-```
+   ```
 
