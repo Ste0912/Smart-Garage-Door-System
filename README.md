@@ -1,44 +1,42 @@
-# Smart-Garage-Door-System
+# IoT Identity & Access Management (IAM) Architecture: Smart Garage System
+An end-to-end Identity & Access Management (IAM) architecture designed specifically for IoT environments. This project provides a secure, role-based framework for managing physical access in residential or corporate contexts, prioritizing unauthorized access prevention, cryptographic security, and comprehensive environmental/audit monitoring.
 
-An end-to-end IoT solution for managing secure garage access and environmental monitoring. This system integrates edge hardware authentication with a centralized Python backend, leveraging a Telegram bot interface for remote administration and comprehensive statistical tracking.
 
-## System Architecture
+## Security Architecture & IAM
+The system is built on a distributed, zero-trust inspired architecture, securing the perimeter from the edge IoT nodes to the centralized API backend:
+**Edge Authentication & Access Control:** ESP8266 edge nodes manage physical entry and exit points utilizing MFRC522 RFID readers over lightweight, machine-to-machine protocols (MQTT/CoAP).
+**Real-Time Validation & Message Brokerage:** An asynchronous MQTT handler processes RFID scan payloads in real-time, validating credentials against a secure MongoDB database to dynamically update access status and mitigate replay attacks.
+**API Security & Temporary Tokens:** A Flask-based RESTful API backend handles telemetry and administrative requests. Endpoints are heavily secured utilizing short-lived temporary token (`temp_token`) validation and strict firewall logic to prevent unauthorized external access.
+**Cryptographic Hashing:** User credentials and sensitive authentication materials are protected using **Argon2** cryptographic hashing, ensuring high resistance against brute-force and dictionary attacks.
+**Secure Telemetry & Audit Trails:** A robust Telegram bot interface acts as the administrative client, providing secure CLI-like access to system logs, usage statistics, and real-time audit trails.
 
-The project is built on a distributed, secure architecture utilizing lightweight machine-to-machine communication protocols and a robust API backend:
-* **Access Control & IoT Edge:** ESP8266 edge nodes manage entry and exit using MFRC522 RFID readers. 
-* **Message Brokerage:** An MQTT handler runs asynchronously to process incoming RFID scans in real-time. It queries a MongoDB database to match UIDs, logs the entry/exit timestamps, and dynamically updates the user's `atHome` status.
-* **RESTful API Backend:** A Flask-based server processes incoming telemetry and administrative actions. API endpoints for user and car management are secured using temporary token validation (`temp_token`) to prevent unauthorized access.
-* **Telegram Interface:** A robust CLI-like Telegram bot allows users to authenticate and interact with the system.
+## Core Security Features
 
-## Core Features
+* **Strict Role-Based Access Control (RBAC):** Implementation of deep RBAC logic to enforce the principle of least privilege. The system rigidly distinguishes between standard users and administrators.
+**Privilege Escalation Prevention:** Sensitive administrative functions (e.g., registering or deleting access entities) require explicit administrative privileges and secondary password verification, effectively mitigating vertical privilege escalation attempts by non-privileged users.
+**Continuous Audit & Monitoring:** Reliable tracking of all access events (timestamps, UID matching) and aggregated historical telemetry, providing administrators with transparent visibility into potential security anomalies.
+* **Schema Validation & Data Integrity:** MongoDB collections are strictly enforced using YAML schemas, guaranteeing data integrity and preventing NoSQL injection or malformed data payload attacks.
 
-* **Role-Based Access Control (RBAC):** The system distinguishes between standard users and administrators. Sensitive operations, such as registering or deleting cars and pedestrians, require administrative privileges and a verified admin password.
-* **Comprehensive Telemetry & Statistics:** Administrators and authenticated users can retrieve detailed usage statistics, including total open times and aggregated historical data (e.g., daily, weekly, or monthly usage).
-* **Structured Data Management:** MongoDB collections are strictly structured using YAML schemas, ensuring consistent data types for user profiles, credentials, and access logs. 
-* **Remote Administration:** Administrators can manage the entire database directly through the Telegram bot using commands like `/register_car`, `/delete_pedestrian`, and `/find_car`.
-
-## Tech Stack
+## Tech Stack & Security Tools
 
 * **Hardware:** ESP8266 Microcontrollers, MFRC522 RFID Readers, I2C LCD Displays, DHT11 Sensor.
 * **Protocols:** MQTT, CoAP, HTTP/REST.
-* **Backend:** Python 3.10, Flask, python-telegram-bot, Paho-MQTT.
-* **Database:** MongoDB (with strict YAML schema validation).
-* **Infrastructure:** Mosquitto (MQTT Broker), ngrok (Webhook exposure).
+* **Backend Framework:** Python 3.10, Flask, python-telegram-bot, Paho-MQTT.
+* **Security Mechanisms:** Argon2 Hashing, Token-based Authentication, RBAC, Schema Validation.
+* **Data & Infrastructure:** MongoDB (Strict YAML Schemas), Eclipse Mosquitto (MQTT Broker), ngrok (Webhook exposure).
 
-## Available Bot Commands
-
-The Telegram interface supports a wide array of commands to manage the system:
-
-* **General:** `/start`, `/help`, `/login <user> <pwd>`, `/logout`
-* **Statistics:** `/get_open_times`, `/get_total_open_times`, `/get_open_times_stats`
-* **Management (Admin Only):** `/register_pedestrian`, `/delete_pedestrian`, `/find_pedestrian`, `/register_car`, `/delete_car`, `/find_car`
-
+## Installation & Setup
 ## Prerequisites
 
 Ensure you have the following installed and configured on your host machine:
 * Python 3.10
 * MongoDB
 * Eclipse Mosquitto
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/Ste0912/SMART_GARAGE_DOOR.git](https://github.com/Ste0912/SMART_GARAGE_DOOR.git)
+   cd SMART_GARAGE_DOOR
 
 ## Installation & Setup
 
@@ -47,21 +45,34 @@ Ensure you have the following installed and configured on your host machine:
    git clone [https://github.com/Ste0912/SMART_GARAGE_DOOR.git](https://githu/SMART_GARAGE_DOOR.git)
    cd SMART_GARAGE_DOOR
    ```
- * Start the required background services:
+
+2. **Start the required background services:**
+   
    Ensure MongoDB and your MQTT broker are running.
    ```bash
     net start mongodb
     mosquitto -v -c "path\to\your\mosquitto.conf"
    ```
- * Set up the Python environment:
+3. **Set up the Python environment:**
+   
    Create and activate a virtual environment, then install dependencies.
    ```bash
    python3.10 -m venv venv
    venv\Scripts\activate
    pip install -r requirements.txt
    ```
- * Run the Application:
+
+4. **Run the Application:**
+   
    ```bash
    python app.py
    ```
+
+## Available Bot Commands
+
+The Telegram interface supports a wide array of commands to manage the system:
+
+* **General:** `/start`, `/help`, `/login <user> <pwd>`, `/logout`
+* **Statistics:** `/get_open_times`, `/get_total_open_times`, `/get_open_times_stats`
+* **Management (Admin Only):** `/register_pedestrian`, `/delete_pedestrian`, `/find_pedestrian`, `/register_car`, `/delete_car`, `/find_car`
 
